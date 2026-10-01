@@ -1,0 +1,16 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const toInt = (value, fallback) => {
+  const n = Number.parseInt(value, 10);
+  return Number.isNaN(n) ? fallback : n;
+};
+
+export const config = Object.freeze({
+  env: process.env.NODE_ENV ?? "development",
+  Port: toInt(process.env.PORT, 3000),
+  host: process.env.HOST ?? "127.0.0.1",
+  bodyLimit: process.env.BODY_LIMIT ?? "100kb",
+  isTest: process.env.NODE_ENV === "test",
+});
