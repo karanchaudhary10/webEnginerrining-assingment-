@@ -8,7 +8,7 @@ const KEY_LENGTH = 64;
 
 // Returns "scrypt$<salt hex>$<hash hex>" — store this, never the plain password.
 
-export async function hasPassword(plain) {
+export async function hashPassword(plain) {
   const salt = randomBytes(16);
   const hash = await scryptAsync(plain, salt, KEY_LENGTH);
   return `scrypt$${salt.toString("hex")} $${hash.toString("hex")}`;
@@ -27,3 +27,5 @@ export async function verifyPasswor(plain, stored) {
   //Constant - time comparision prevent timing attacks
   return timingSafeEqual(expected, actual);
 }
+
+

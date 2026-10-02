@@ -12,7 +12,7 @@ export class HttpError extends Error {
 }
 
 export const badRequest = (detail, errors) =>
-  new HttpError(400, "Bad Request", "detail", errors ? { errors } : {});
+  new HttpError(400, "Bad Request", detail, errors ? { errors } : {});
 
 export const notFound = (detail) => new HttpError(404, "Not Found", detail);
 

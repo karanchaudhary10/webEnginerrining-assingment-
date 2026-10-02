@@ -1,10 +1,17 @@
-import { AppCr } from "./app.js";
+import { createApp } from "./app.js";
+import { config } from './config/env.js';
+const app = createApp();
 
-const app = AppCr();
-
-const PORT = 3000;
-const HOST = "127.0.0.1";
-
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running in Url  http://${HOST}:${PORT}`);
+const server = app.listen(config.port, config.host, () => {
+  console.log(`👤 Users API on http://${config.host}:${config.port} (${config.env}, pid ${process.pid})`);
 });
+
+// Graceful shutdown: stop accepting new connections, finish in-flight requests, then exit.
+function shutdown(signal) {
+  console.log(`${signal} received — shutting down`);
+  server.close(() => process.exit(0));
+  server.closeIdleConnections();
+  setTimeout(() => process.exit(1), 10_000).unref();
+}
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
