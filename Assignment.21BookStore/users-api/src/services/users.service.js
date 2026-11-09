@@ -16,7 +16,7 @@ const withDefaults = (profile) => ({
 // The ONLY way a user leaves this service: without the password hash.
 export const toPublicUser = ({ passwordHash, ...user }) => user;
 
-export class UsersService {
+export class  UsersService {
   // `hash` is injectable so unit tests can use a fast fake instead of real scrypt.
   constructor(usersRepository, { hash = hashPassword } = {}) {
     this.users = usersRepository;

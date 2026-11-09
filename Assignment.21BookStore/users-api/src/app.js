@@ -1,41 +1,32 @@
-import express from "express";
-import { config } from "./config/env.js";
-import { errorHandler } from "./middleware/error-handler.js";
-import { notFoundHandler } from "./middleware/not-found.js";
-import { requestId } from "./middleware/request-id.js";
-import { requestLogger } from "./middleware/request-logger.js";
-import { usersRouter } from "./routes/users.routes.js";
+import express from 'express';
+import { config } from './config/env.js';
+import { errorHandler } from './middleware/error-handler.js';
+import { notFoundHandler } from './middleware/not-found.js';
+import { requestId } from './middleware/request-id.js';
+import { requestLogger } from './middleware/request-logger.js';
+import { requireJson } from './middleware/require-json.js';
+import { createUsersRouter } from './routes/users.routes.js';
 
-// NEW imports for books
-import { createBooksController } from "./controllers/books.controller.js";
-import { createBooksRouter } from "./routes/books.routes.js";
-import { BooksService } from "./services/books.service.js";
-import { BooksRepository } from "./repositories/books.repository.js";
-
-export function createApp() {
+// Builds the Express app from the objects in the container. Does NOT call listen().
+export function createApp({ usersController }) {
   const app = express();
 
-  app.disable("x-powered-by");
-  app.set("trust proxy", "loopback");
+  app.disable('x-powered-by');
+  app.set('trust proxy', 'loopback');
 
-  // ── 1. Pre-route middleware ──
+  // ── 1. App-level middleware (runs top to bottom for EVERY request) ──
   app.use(requestId);
   if (!config.isTest) app.use(requestLogger);
+  app.use(requireJson); // 415 unless POST/PUT/PATCH bodies are JSON
   app.use(express.json({ limit: config.bodyLimit }));
 
   // ── 2. Routes ──
-  app.get("/health", (req, res) => {
-    res.json({ status: "ok", uptimeSec: Math.round(process.uptime()) });
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok', uptimeSec: Math.round(process.uptime()) });
   });
-  app.use("/api/v1/users", usersRouter);
+  app.use('/api/v1/users', createUsersRouter(usersController));
 
-  // NEW: mount books router
-  const booksService = new BooksService(new BooksRepository());
-  const booksController = createBooksController(booksService);
-  const booksRouter = createBooksRouter(booksController);
-  app.use("/api/v1/books", booksRouter);
-
-  // ── 3. Fallbacks ──
+  // ── 3. Fallbacks (must be LAST) ──
   app.use(notFoundHandler);
   app.use(errorHandler);
 

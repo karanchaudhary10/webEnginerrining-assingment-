@@ -1,12 +1,13 @@
-import {UsersRepository} from '../repositories/users.repository.js';
-import {UsersService} from '../services/users.service.js';
+// import {UsersRepository} from '../repositories/users.repository.js';
+// import {UsersService} from '../services/users.service.js';
 import {pageLinks} from '../utils/querry.js';
 
 // The controller creates its own service (and the service's repository) — no container.
 // Methods are ARROW FUNCTIONS so `this` still works when Express calls them as plain callbacks.
 export class UsersController {
-  constructor() {
-    this.usersService = new UsersService(new UsersRepository());
+  constructor(usersService) {
+    // this.usersService = new UsersService(new UsersRepository());
+    this.usersService = usersService;
   }
 
   list = async (req, res) => {
