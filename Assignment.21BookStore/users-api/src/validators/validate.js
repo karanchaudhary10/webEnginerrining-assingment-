@@ -1,4 +1,4 @@
-import {} from "../utils/http-error.js";
+import { badRequest } from "../utils/http-error.js";
 
 /**
  * Validate a request body against a schema.
