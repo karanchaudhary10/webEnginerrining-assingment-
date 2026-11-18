@@ -1,12 +1,9 @@
-// import {UsersRepository} from '../repositories/users.repository.js';
-// import {UsersService} from '../services/users.service.js';
-import {pageLinks} from '../utils/querry.js';
+import { pageLinks } from '../utils/querry.js';
 
-// The controller creates its own service (and the service's repository) — no container.
-// Methods are ARROW FUNCTIONS so `this` still works when Express calls them as plain callbacks.
+// Dependency Injection: the controller RECEIVES its service instead of creating it.
+// It no longer imports UsersService or UsersRepository at all.
 export class UsersController {
   constructor(usersService) {
-    // this.usersService = new UsersService(new UsersRepository());
     this.usersService = usersService;
   }
 
@@ -26,6 +23,11 @@ export class UsersController {
 
   update = async (req, res) => {
     res.json({ data: await this.usersService.update(req.params.id, req.body) });
+  };
+
+  // Admin only (RBAC): PATCH /users/:id/role  { "role": "admin" }
+  changeRole = async (req, res) => {
+    res.json({ data: await this.usersService.changeRole(req.params.id, req.body.role) });
   };
 
   remove = async (req, res) => {
