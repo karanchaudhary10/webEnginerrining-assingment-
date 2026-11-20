@@ -1,5 +1,5 @@
 import { conflict, notFound, badRequest } from '../utils/http-error.js';
-import { paginate, parsePagination, sortItems } from '../utils/querry.js';
+import { paginate, parsePagination, sortItems } from '../utils/query.js';
 
 const SORTABLE_FIELDS = ['title', 'author', 'publishedYear', 'price', 'stock', 'createdAt'];
 
