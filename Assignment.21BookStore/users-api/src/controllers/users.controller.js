@@ -1,4 +1,4 @@
-import { pageLinks } from '../utils/querry.js';
+import { pageLinks } from '../utils/query.js';
 
 // Dependency Injection: the controller RECEIVES its service instead of creating it.
 // It no longer imports UsersService or UsersRepository at all.

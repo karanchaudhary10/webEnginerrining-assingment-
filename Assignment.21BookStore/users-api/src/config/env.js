@@ -33,6 +33,23 @@ export const config = Object.freeze({
     password: process.env.ADMIN_PASSWORD,
   },
 
+  // ── New in 2.4: file uploads ──
+  uploads: {
+    driver: process.env.STORAGE_DRIVER ?? 'local', // 'local' (disk) or 's3'
+    localDir: process.env.UPLOADS_DIR ?? 'uploads',
+    publicBaseUrl: process.env.PUBLIC_BASE_URL ?? 'http://localhost:3000',
+    maxBytes: toInt(process.env.UPLOAD_MAX_BYTES, 5 * 1024 * 1024), // 5 MB
+  },
+
+  s3: {
+    region: process.env.S3_REGION ?? 'us-east-1',
+    bucket: process.env.S3_BUCKET,
+    endpoint: process.env.S3_ENDPOINT, // set for MinIO / Cloudflare R2; leave empty for AWS
+    publicUrl: process.env.S3_PUBLIC_URL, // e.g. https://my-bucket.s3.us-east-1.amazonaws.com
+    accessKeyId: process.env.S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  },
+
   github: {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,

@@ -1,4 +1,4 @@
-import { pageLinks } from '../utils/querry.js';
+import { pageLinks } from '../utils/query.js';
 
 // Controllers translate HTTP ⇄ service calls. No business rules live here.
 // Express 5 forwards any thrown error / rejected promise to the error handler automatically.
