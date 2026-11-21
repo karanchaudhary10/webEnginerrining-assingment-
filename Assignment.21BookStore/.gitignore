@@ -1,0 +1,8 @@
+# Backend
+users-api/node_modules/
+users-api/uploads/
+users-api/.env
+
+# Frontend
+frontend-lab/node_modules/
+frontend-lab/dist/
