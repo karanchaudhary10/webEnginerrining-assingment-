@@ -6,25 +6,27 @@ const toInt = (value, fallback) => {
 };
 
 // Fail fast: never start with a missing or weak signing secret.
-const jwtSecret = process.env.JWT_SECRET ?? '';
+const jwtSecret = process.env.JWT_SECRET ?? "";
 if (jwtSecret.length < 32) {
-  throw new Error('JWT_SECRET must be set and at least 32 characters long (see .env.example)');
+  throw new Error(
+    "JWT_SECRET must be set and at least 32 characters long (see .env.example)",
+  );
 }
 
 export const config = Object.freeze({
-  env: process.env.NODE_ENV ?? 'development',
-  isProduction: process.env.NODE_ENV === 'production',
-  isTest: process.env.NODE_ENV === 'test',
+  env: process.env.NODE_ENV ?? "development",
+  isProduction: process.env.NODE_ENV === "production",
+  isTest: process.env.NODE_ENV === "test",
   port: toInt(process.env.PORT, 3000),
-  host: process.env.HOST ?? '127.0.0.1',
-  bodyLimit: process.env.BODY_LIMIT ?? '100kb',
+  host: process.env.HOST ?? "127.0.0.1",
+  bodyLimit: process.env.BODY_LIMIT ?? "100kb",
 
   auth: {
     jwtSecret,
     accessTokenTtlSeconds: toInt(process.env.ACCESS_TOKEN_TTL_SECONDS, 15 * 60), // 15 minutes
     refreshTokenTtlDays: toInt(process.env.REFRESH_TOKEN_TTL_DAYS, 7),
-    issuer: 'users-api',
-    audience: 'users-api',
+    issuer: "users-api",
+    audience: "users-api",
   },
 
   // First admin account, created at startup if it doesn't exist yet.
@@ -35,14 +37,14 @@ export const config = Object.freeze({
 
   // ── New in 2.4: file uploads ──
   uploads: {
-    driver: process.env.STORAGE_DRIVER ?? 'local', // 'local' (disk) or 's3'
-    localDir: process.env.UPLOADS_DIR ?? 'uploads',
-    publicBaseUrl: process.env.PUBLIC_BASE_URL ?? 'http://localhost:3000',
+    driver: process.env.STORAGE_DRIVER ?? "local", // 'local' (disk) or 's3'
+    localDir: process.env.UPLOADS_DIR ?? "uploads",
+    publicBaseUrl: process.env.PUBLIC_BASE_URL ?? "http://localhost:3000",
     maxBytes: toInt(process.env.UPLOAD_MAX_BYTES, 5 * 1024 * 1024), // 5 MB
   },
 
   s3: {
-    region: process.env.S3_REGION ?? 'us-east-1',
+    region: process.env.S3_REGION ?? "us-east-1",
     bucket: process.env.S3_BUCKET,
     endpoint: process.env.S3_ENDPOINT, // set for MinIO / Cloudflare R2; leave empty for AWS
     publicUrl: process.env.S3_PUBLIC_URL, // e.g. https://my-bucket.s3.us-east-1.amazonaws.com
@@ -50,9 +52,30 @@ export const config = Object.freeze({
     secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
   },
 
+  // ── New in 2.5: security ──
+  security: {
+    // Browser origins allowed to call the API (CORS) and to use the refresh cookie (CSRF check).
+    corsOrigins: (process.env.CORS_ORIGINS ?? "http://localhost:5173")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+    // Whole API: 300 requests / 15 min per IP.
+    apiRateLimit: {
+      windowMs: 15 * 60 * 1000,
+      limit: toInt(process.env.RATE_LIMIT_MAX, 300),
+    },
+    // Login/register: 5 FAILED attempts / 15 min per IP + email (brute-force protection).
+    authRateLimit: {
+      windowMs: 15 * 60 * 1000,
+      limit: toInt(process.env.AUTH_RATE_LIMIT_MAX, 5),
+    },
+  },
+
   github: {
     clientId: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackUrl: process.env.GITHUB_CALLBACK_URL ?? 'http://localhost:3000/api/v1/auth/github/callback',
+    callbackUrl:
+      process.env.GITHUB_CALLBACK_URL ??
+      "http://localhost:3000/api/v1/auth/github/callback",
   },
 });
