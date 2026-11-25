@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+/* 1. Raw tokens, switched by the data-theme attribute set in ThemeContext */
+:root {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #0ea5e9;
+  --primary-contrast: #ffffff;
+  --border: #e2e8f0;
+  --radius: 0.75rem;
+}
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #131c2e;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --primary: #38bdf8;
+  --primary-contrast: #06202e;
+  --border: #243049;
+}
+
+/* 2. Expose tokens as Tailwind utilities: bg-surface, text-muted, rounded-card ... */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-fg: var(--text);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-contrast: var(--primary-contrast);
+  --color-line: var(--border);
+  --radius-card: var(--radius);
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+body { @apply bg-bg text-fg font-sans antialiased; }
