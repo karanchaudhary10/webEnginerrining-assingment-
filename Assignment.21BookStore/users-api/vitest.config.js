@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.js'],
+    fileParallelism: false,
     // Test-only values. config/env.js refuses to start without a JWT_SECRET.
     env: {
       NODE_ENV: 'test',

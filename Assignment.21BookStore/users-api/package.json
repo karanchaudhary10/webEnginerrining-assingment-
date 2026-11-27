@@ -7,7 +7,11 @@
     "test": "vitest run",
     "dev": "node --env-file-if-exists=.env --watch src/server.js",
     "start": "node --env-file-if-exists=.env src/server.js",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:up": "docker compose -f docker/docker-compose.yml up -d",
+    "db:down": "docker compose -f docker/docker-compose.yml down",
+    "db:psql": "docker compose -f docker/docker-compose.yml exec postgres psql -U users -d users_api",
+    "db:migrate": "node --env-file-if-exists=.env src/db/migrate.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +28,7 @@
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.5.0",
+    "pg": "^8.23.1",
     "sharp": "^0.35.5",
     "zod": "^4.6.7"
   },
